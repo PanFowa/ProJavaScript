@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="../../../js/common/inherits.js"></script>
+    <script>
+        /**
+         * 创建一个新的Person对象构造函数
+         * @constructor
+         */
+        function Person(name) {
+            this.name=name;
+        };
+        //给Person对象添加一个新方法
+        Person.method("getName",function () {
+            return this.name;
+        });
+        /**
+         * 创建了一个新的User对象构造器
+         * @constructor
+         */
+        function User(name,password) {
+            this.name=name;
+            this.password=password;
+        };
+        //从Person对象继承所有方法
+        User.inherits(Person);
+        //给User添加一个新的方法
+        User.method("getPassword",function () {
+            return this.password;
+        });
+        //覆盖Person对象创建的getName方法，但通过uber函数来调用原方法
+        User.method("getName",function () {
+            return "My name is "+this.uber('getName');
+        });
 
+        var user=new User("张三","123");
+        console.log(user);
+    </script>
 </head>
 <body>
-<h1 id="h1">您好</h1>
+
 </body>
-<script>
-    var win=window;
-    console.log(win);
-    var h1=document.getElementById("h1");
-    console.log(h1.nodeType);
-
-    console.log(h1);
-    console.log(document.ELEMENT_NODE);
-
-</script>
 </html>

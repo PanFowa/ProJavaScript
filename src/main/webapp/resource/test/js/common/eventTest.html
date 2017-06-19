@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../../js/common/event.js"></script>
+    <script>
+        function loaded() {
+            var bodyTag=document.getElementsByTagName("h1")[0];
+            addEvent(bodyTag,"click",function () {
+             console.log(this);
+            });
+
+            addEvent(bodyTag,"click",function () {
+                console.log(this);
+            });
+            addEvent(bodyTag,"click",function () {
+                console.log(this);
+            });
+        };
+        window.onload=loaded;
+    </script>
+</head>
+<body>
+<h1>11111111</h1>
+</body>
+</html>
