@@ -2,6 +2,32 @@
  * Created by think on 2017/6/19.
  */
 /**
+ * Created by Administrator on 2017/6/18.
+ */
+/**
+ * 获取指定元素的样式
+ * @param elem
+ * @param name
+ */
+function getStyle(elem, name) {
+    //如果属性存在于style[]中，那么它已被设置了（并且是当前的）
+    if (elem.style[name]) {
+        return elem.style[name];
+        //否则，尝试使用IE的方法
+    } else if (elem.currentStyle) {
+        return elem.currentStyle[name];
+    } else if (document.defaultView && document.defaultView.getComputedStyle) {
+        //它使用的是通用的‘text-align’的样式规则，而非'textAlign'
+        name = name.replace(/[A-Z]/g, "-$1");
+        name = name.toLocaleLowerCase();
+        //获取样式对象并获取属性（存在的话）的值
+        var s = document.defaultView.getComputedStyle(elem, "");
+        return s && s.getPropertyValue(name);
+    } else {//否则使用的是其他浏览器
+        return null;
+    }
+};
+/**
  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>获取位置 开始<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
  */
 /**
