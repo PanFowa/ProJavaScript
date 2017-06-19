@@ -43,7 +43,7 @@ function pageX(elem) {
     //查看我们是否位于根元素
     return elem.offsetParent ?
         //如果我们能够得到上一个元素，增加当前偏移量并继续向上递归
-        elem.offsetLeft + pageX(elem.offsetParent) :
+    elem.offsetLeft + pageX(elem.offsetParent) :
         //否则获取当前的偏移量
         elem.offsetLeft;
 };
@@ -55,7 +55,7 @@ function pageY(elem) {
     //查看我们是否位于根元素
     return elem.offsetParent ?
         //如果我们能够得到上一个元素，增加当前偏移量并继续向上递归
-        elem.offsetTop + pageY(elem.offsetParent) :
+    elem.offsetTop + pageY(elem.offsetParent) :
         //否则获取当前的偏移量
         elem.offsetParent;
 };
@@ -75,7 +75,7 @@ function parentX(elem) {
     //如果offsetParent是父元素，提前退出
     return elem.parentNode == elem.offsetParent ? elem.offsetLeft :
         //否则我们需要找出元素和元素的父亲相对于整个页面的位置，并计算他们之间的差
-        pageX(elem) - pageX(elem.parentNode);
+    pageX(elem) - pageX(elem.parentNode);
 };
 
 /**
@@ -87,7 +87,7 @@ function parentY(elem) {
     //如果offsetParent是父元素，提前退出
     return elem.parentNode == elem.offsetParent ? elem.offsetTop :
         //否则我们需要找出元素和元素的父亲相对于整个页面的位置，并计算他们之间的差
-        pageY(elem) - pageY(elem.parentNode);
+    pageY(elem) - pageY(elem.parentNode);
 };
 
 /**
@@ -242,14 +242,14 @@ function fullWidth(elem) {
  * @param prop
  * @returns {{}}
  */
-function resetCSS(elem,prop) {
-    var old={};
+function resetCSS(elem, prop) {
+    var old = {};
     //遍历每一个属性
-    for(var i in prop){
+    for (var i in prop) {
         //记录旧的属性值
-        old[i]=elem.style[i];
+        old[i] = elem.style[i];
         //并设置新的值
-        elem.style[i]=prop[i];
+        elem.style[i] = prop[i];
     }
 
     //返回已经变化的值的集合，预留给restoreCSS函数使用
@@ -261,10 +261,10 @@ function resetCSS(elem,prop) {
  * @param elem
  * @param prop
  */
-function restoreCSS(elem,prop) {
+function restoreCSS(elem, prop) {
     //重置所有属性值，恢复它们的原有值
-    for(var i in prop){
-        elem.style[i]=prop[i];
+    for (var i in prop) {
+        elem.style[i] = prop[i];
     }
 }
 
@@ -273,3 +273,45 @@ function restoreCSS(elem,prop) {
  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>元素尺寸 结束<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
  */
 
+
+/**
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>元素的可见性 开始<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ * 控制元素的可见性可通过visibility（值有visiable,hidden）;
+ * display(值有inline--未打破普通文档流,block--打破普通文档流,none--打破普通文档流);
+ * opacity（0-100；0--完全透明）
+ */
+/**
+ * 使用display隐藏元素的函数
+ * @param elem
+ */
+function hide(elem) {
+    //找出元素display的当前状态
+    var curDisplay = getStyle(elem, 'display');
+    //记录它的display状态
+    if (curDisplay != 'none') {
+        elem.$oldDisplay = curDisplay;
+    }
+    //设置display为none(即隐藏了元素)
+    elem.style.display = 'none';
+};
+/**
+ * 使用display显示元素的函数
+ * @param elem
+ */
+function show(elem) {
+    //设置display属性未它的原始值，如没有记录有原始值，则使用block
+    elem.style.display = elem.$oldDisplay || '';
+};
+/**
+ * 调节元素的透明度的函数
+ * @param elem
+ * @param level
+ */
+function setOpacity(elem, level) {
+    //如果存在属性filters，则它是IE，所以设置元素的Alpha滤镜
+    if (elem.filters) {
+        elem.style.filters = 'alpha(opacity=' + level + ')';
+    }else {
+        elem.style.opacity=level/100;
+    }
+};
