@@ -48,7 +48,7 @@ function pageX(elem) {
         elem.offsetLeft;
 };
 /**
- * 获取元素的x（垂直，顶端）位置
+ * 获取元素的y（垂直，顶端）位置
  * @param elem
  */
 function pageY(elem) {
@@ -311,7 +311,186 @@ function setOpacity(elem, level) {
     //如果存在属性filters，则它是IE，所以设置元素的Alpha滤镜
     if (elem.filters) {
         elem.style.filters = 'alpha(opacity=' + level + ')';
-    }else {
-        elem.style.opacity=level/100;
+    } else {
+        elem.style.opacity = level / 100;
     }
+};
+
+/**
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>元素的可见性 结束<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ *
+ */
+
+/**
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>动画 开始<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ *
+ */
+
+/**
+ * 通过短时间内增加高度逐步显示隐藏元素的函数
+ * @param elem
+ */
+function slideDown(elem) {
+    //从0高度开始滑动
+    elem.style.height = 0 + "px";
+    //先显示元素，但是看不到它（因为高度为0）
+    show(elem);
+    //找到元素的完整的潜在高度
+    var h = fullHeight(elem);
+    //我们在1秒钟内执行20帧的动画
+    for (var i = 0; i <= 100; i += 5) {
+        //保证我们能够保持正确的‘i’的闭包函数
+        (function () {
+            var pos = i;
+            //设置timeout以让它能在指定的时间点运行
+            setTimeout(function () {
+                //设置元素的新高度
+                elem.style.height = ((pos / 100) * h) + "px";
+            }, (pos + 1) * 10);
+        })();
+    }
+};
+
+/**
+ * 渐显。通过透明度逐渐显示元素比通过高度逐渐显示元素的方式更为平滑，用户体验更好
+ * 通过短时间内增加透明度逐步显示隐藏元素的函数
+ * @param elem
+ */
+function fadeIn(elem) {
+    //从0透明度开始
+    setOpacity(elem, 0);
+    //先显示元素，但是看不到它（因为透明度为0）
+    show(elem);
+    for (var i = 0; i <= 100; i += 5) {
+        //保证我们能够保持正确的‘i’的闭包函数
+        (function () {
+            var pos = i;
+            //设置timeout以让它能在指定的时间点运行
+            setTimeout(function () {
+                //设置元素的新高度
+                setOpacity(elem, pos);
+            }, (pos + 1) * 10);
+        })();
+    }
+};
+
+/**
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>动画 结束<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ *获取鼠标的位置是编写拖放操作和上下文菜单的基础，这两种效果都只能通过Javascript和CSS的相互作用产生
+ * 首先需要确定的两个变量是，光标相对于整个页面的x和y位置。因为只能从鼠标事件中才能得到鼠标坐标的信息，所以需要通过一般的鼠标事件来捕获
+ * 比如mousemove或者mousedown
+ */
+/**
+ *获取光标的水平位置
+ * @param e
+ * @returns {Number|number}
+ */
+function getX(e) {
+    //标准化事件对象
+    e = e || window.event;
+    //先检查非IE浏览器的位置，再检查IE浏览器的位置
+    return e.pageX || e.clientX + document.body.scrollLeft;
+};
+
+/**
+ *获取光标的垂直位置
+ * @param e
+ * @returns {Number|number}
+ */
+function getY(e) {
+    //标准化事件对象
+    e = e || window.event;
+    //先检查非IE浏览器的位置，再检查IE浏览器的位置
+    return e.pageY || e.clientY + document.body.scrollTop;
+};
+
+/**
+ * 最后，与鼠标相关的变量还有，光标相对于它当前正在交互的元素的x和y位置
+ */
+/**
+ * 获取鼠标相对于当前元素（事件对象‘e’的属性target）的x位置
+ * @param e
+ * @returns {*|Number}
+ */
+function getElementX(e) {
+    //获取正确的元素偏移量
+    return (e && e.layerX) || window.event.offsetX;
+};
+
+/**
+ * 获取鼠标相对于当前元素（事件对象‘e’的属性target）的y位置
+ * @param e
+ * @returns {*|Number}
+ */
+function getElementY(e) {
+    //获取正确的元素偏移量
+    return (e && e.layerY) || window.event.offsetY;
+};
+/**
+ * 返回页面的高度（增加内容的时候可能会改变）
+ */
+function pageHeight() {
+    return document.body.scrollHeight;
+};
+
+/**
+ * 返回页面的宽度（增加内容的时候可能会改变）
+ */
+function pageWidth() {
+    return document.body.scrollWidth;
+};
+/**
+ * 确定浏览器水平滚动条的函数
+ */
+function scrollX() {
+    //一个快捷放肆，用在IE6/7严格模式中
+    var de = document.documentElement;
+    //如果浏览器存在pageXoffset属性，则使用它
+    return self.pageXOffset ||
+        //否则，尝试获取根节点的左端滚动的偏移量
+        (de && de.scrollLeft) ||
+        //最后，尝试获取body元素的左端滚动的偏移量
+        document.body.scrollLeft;
+};
+
+/**
+ * 确定浏览器垂直滚动条的函数
+ */
+function scrollY() {
+    //一个快捷放肆，用在IE6/7严格模式中
+    var de = document.documentElement;
+    //如果浏览器存在pageYoffset属性，则使用它
+    return self.pageYOffset ||
+        //否则，尝试获取根节点的顶端滚动的偏移量
+        (de && de.scrollTop) ||
+        //最后，尝试获取body元素的顶端滚动的偏移量
+        document.body.scrollTop;
+};
+
+/**
+ * 获取视口的高度
+ */
+function windowHeight() {
+    //一个快捷放肆，用在IE6/7严格模式中
+    var de = document.documentElement;
+    //如果浏览器存在innerHeight属性，则使用它
+    return self.innerHeight ||
+        //否则，尝试获取根节点的高度偏移量
+        (de && de.clientHeight) ||
+        //最后，尝试获取body元素的高度偏移量
+        document.body.clientHeight;
+};
+
+/**
+ * 获取视口的宽度
+ */
+function windowWidth() {
+    //一个快捷放肆，用在IE6/7严格模式中
+    var de = document.documentElement;
+    //如果浏览器存在innerWidth属性，则使用它
+    return self.innerWidth ||
+        //否则，尝试获取根节点的宽度偏移量
+        (de && de.clientWidth) ||
+        //最后，尝试获取body元素的宽度偏移量
+        document.body.clientWidth;
 };

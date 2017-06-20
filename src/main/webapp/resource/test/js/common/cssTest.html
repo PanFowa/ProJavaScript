@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../../js/common/css.js"></script>
+
+</head>
+<body>
+<h1>cssTest</h1>
+</body>
+<script>
+    //滚动到浏览器的顶端
+    window.scrollTo(0, 0);
+    //如果需要滚动到指定的元素，则可以这么做
+    var elemment=document.getElementsByTagName("body")[0];
+    var y=pageY(elemment);
+    window.scrollTo(0,y );
+</script>
+</html>
